@@ -61,4 +61,7 @@ const catInfo = [
   }
 ];
 
-module.exports = dogInfo, catInfo;
+module.exports = {
+  dogInfo, 
+  catInfo
+};
