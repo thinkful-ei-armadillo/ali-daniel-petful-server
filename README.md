@@ -2,12 +2,19 @@
 
 by Ali Lahrime and Daniel Ors
 
-## Scripts
+## Intro
 
-Start the application `npm start`
+Petful is an animal adoption tool - we have many cute puppies and kittens for you to adopt!
 
-Run the tests in watch mode `npm test`
+Simply click the link below and select the dog or cat you would like to adopt.
 
-## Deploying
+## Demo
 
-When your new project is ready for deployment, add a new heroku application with `heroku create`. This will make a new git remote called "heroku" and you can then `npm run deploy` which will push to this remote's master branch.
+https://petful-ali-daniel.now.sh/
+
+## Tech Stack
+
+* ExpressJS
+* NodeJS
+* RESTful API
+* Deployed using Heroku
