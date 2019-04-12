@@ -1,8 +1,8 @@
-"use strict";
-const express = require("express");
-const cors = require("cors");
-const morgan = require("morgan");
-const helmet = require("helmet");
+'use strict';
+const express = require('express');
+const cors = require('cors');
+const morgan = require('morgan');
+const helmet = require('helmet');
 const {
   catRefill,
   dogRefill,
@@ -10,13 +10,13 @@ const {
   Cats,
   Dogs,
   Users
-} = require("./src/store");
-const { PORT, NODE_ENV, CLIENT_ORIGIN } = require("./src/config");
+} = require('./src/store');
+const { PORT, NODE_ENV, CLIENT_ORIGIN } = require('./src/config');
 
 const app = express();
 app.use(
-  morgan(NODE_ENV === "production" ? "tiny" : "common", {
-    skip: () => NODE_ENV === "test"
+  morgan(NODE_ENV === 'production' ? 'tiny' : 'common', {
+    skip: () => NODE_ENV === 'test'
   })
 );
 app.use(helmet());
@@ -30,23 +30,26 @@ app.use(
 //   res.json(console.log("Hello World")).catch(next);
 // });
 
-app.get("/api/cat", function(req, res, next) {
+app.get('/api/cat', function(req, res, next) {
   const cat = Cats.peek();
   if (!cat) {
     catRefill();
     const newCat = Cats.peek();
-    return res.send(newCat);
+    res.send(newCat);
+  } else {
+    res.json(cat);
   }
-  return res.send(cat); //.catch(next);
 });
 
-app.get("/api/dog", (req, res, next) => {
+app.get('/api/dog', (req, res, next) => {
   const dog = Dogs.peek();
   if (!dog) {
     dogRefill();
     const newDog = Dogs.peek();
-    return res.send(newDog);
-  } else return res.send(dog); //.catch(next);
+    res.send(newDog);
+  } else {
+    res.json(dog);
+  }
 });
 
 // app.get("/api/user", (req, res, next) => {
@@ -58,24 +61,24 @@ app.get("/api/dog", (req, res, next) => {
 //   } else return res.send(user).catch(next);
 // });
 
-app.delete("/api/cat", (req, res, next) => {
+app.delete('/api/cat', (req, res, next) => {
   Cats.dequeue();
   const user = Users.peek();
   if (!user) {
     userRefill();
   }
   const adopter = Users.dequeue();
-  res.status(200).json({ name: adopter.name });
+  res.status(200).json(adopter.name);
 });
 
-app.delete("/api/dog", (req, res, next) => {
+app.delete('/api/dog', (req, res, next) => {
   Dogs.dequeue();
   const user = Users.peek();
   if (!user) {
     userRefill();
   }
   const adopter = Users.dequeue();
-  res.status(200).json({ name: adopter.name });
+  res.status(200).json(adopter.name);
 });
 
 // // Catch-all 404
@@ -87,8 +90,8 @@ app.delete("/api/dog", (req, res, next) => {
 
 app.use(function errorHandler(error, req, res, next) {
   let response;
-  if (NODE_ENV === "production") {
-    response = { error: "Server error" };
+  if (NODE_ENV === 'production') {
+    response = { error: 'Server error' };
   } else {
     console.error(error);
     response = { error: error.message, object: error };
