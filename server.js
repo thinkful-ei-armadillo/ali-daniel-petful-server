@@ -3,8 +3,8 @@ const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
 const helmet = require('helmet');
-const { dogInfo, catInfo } = require('./src/store');
-const {PORT, NODE_ENV} = require('./src/config');
+const { dogInfo, catInfo, catRefill, dogRefill } = require('./src/store');
+const {PORT, NODE_ENV, CLIENT_ORIGIN} = require('./src/config');
 
 const app = express();
 app.use(morgan((NODE_ENV === 'production') ? 'tiny' : 'common', {
@@ -12,10 +12,9 @@ app.use(morgan((NODE_ENV === 'production') ? 'tiny' : 'common', {
 }));
 app.use(helmet());
 app.use(cors({
-  origin: 'http://localhost:3000/' || '*' 
+  origin: CLIENT_ORIGIN
 }));
 
-// console.log(catInfo[0]);
 
 app.get('/', function (req, res, next) {
   res.json(console.log('Hello World'))
@@ -23,35 +22,40 @@ app.get('/', function (req, res, next) {
 });
 
 app.get('/api/cat', function (req, res, next) {
-  res.send(catInfo[0])
-    .then(console.log('hello from cat GET request!'))
-    .catch(next);
+  const cat = catInfo.peek();
+  if (!cat) {
+    catRefill();
+    const newCat = catInfo.peek();
+    return res.send(newCat);
+  }
+  return res.send(cat)
+    .catch(error => {
+      error.status(404).send(error.message);
+    });
 });
 
 app.get('/api/dog', (req, res, next) => {
-  res.send(dogInfo[0])
-    .then(console.log('hello from dog GET request!'))
-    .catch(next);
+  const dog = dogInfo.peek();
+  if (!dog) {
+    dogRefill();
+    const newDog = dogInfo.peek();
+    return res.send(newDog);
+  } 
+  else
+    return res.send(dog)
+      .catch(error => {
+        error.status(404).send(error.message);
+      });
 });
 
 app.delete('/api/cat', (req, res, next) => {
-  Promise.all([
-    catInfo.shift(),
-    res.sendStatus(204)
-      .catch(err => {
-        next(err);
-      })
-  ]);
+  catInfo.dequeue();
+  res.status(204).send();
 });
 
 app.delete('/api/dog', (req, res, next) => {
-  Promise.all([
-    dogInfo.shift(),
-    res.sendStatus(204)
-      .catch(err => {
-        next(err);
-      })
-  ]);
+  dogInfo.dequeue();
+  res.status(204).send();
 });
 
 
