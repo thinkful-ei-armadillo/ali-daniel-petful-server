@@ -3,7 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
 const helmet = require('helmet');
-const { dogInfo, catInfo, catRefill, dogRefill } = require('./src/store');
+const { catRefill, dogRefill, Cats, Dogs } = require('./src/store');
 const {PORT, NODE_ENV, CLIENT_ORIGIN} = require('./src/config');
 
 const app = express();
@@ -22,39 +22,35 @@ app.get('/', function (req, res, next) {
 });
 
 app.get('/api/cat', function (req, res, next) {
-  const cat = catInfo.peek();
+  const cat = Cats.peek();
   if (!cat) {
     catRefill();
-    const newCat = catInfo.peek();
+    const newCat = Cats.peek();
     return res.send(newCat);
   }
   return res.send(cat)
-    .catch(error => {
-      error.status(404).send(error.message);
-    });
+    .catch(next);
 });
 
 app.get('/api/dog', (req, res, next) => {
-  const dog = dogInfo.peek();
+  const dog = Dogs.peek();
   if (!dog) {
     dogRefill();
-    const newDog = dogInfo.peek();
+    const newDog = Dogs.peek();
     return res.send(newDog);
   } 
   else
     return res.send(dog)
-      .catch(error => {
-        error.status(404).send(error.message);
-      });
+      .catch(next);
 });
 
 app.delete('/api/cat', (req, res, next) => {
-  catInfo.dequeue();
+  Cats.dequeue();
   res.status(204).send();
 });
 
 app.delete('/api/dog', (req, res, next) => {
-  dogInfo.dequeue();
+  Dogs.dequeue();
   res.status(204).send();
 });
 

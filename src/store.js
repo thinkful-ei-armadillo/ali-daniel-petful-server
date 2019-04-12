@@ -115,20 +115,17 @@ Cats.enqueue(catInfo[1]);
 Cats.enqueue(catInfo[2]);
 
 
-const catRefill = () => {
+function catRefill() {
   Cats.enqueue(catInfo[1]);
   Cats.enqueue(catInfo[2]);
   Cats.enqueue(catInfo[0]);
- 
+}
 
-};
-
-const dogRefill = () => {
+function dogRefill() {
   Dogs.enqueue(dogInfo[0]);
   Dogs.enqueue(dogInfo[2]);
   Dogs.enqueue(dogInfo[1]);
- 
-};
+}
 
 module.exports = {
   dogInfo, 
