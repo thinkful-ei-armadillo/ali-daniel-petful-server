@@ -2,15 +2,15 @@
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
-const { dogInfo, catInfo } = require('./store');
-const PORT = require('./config');
+const helmet = require('helmet');
+const { dogInfo, catInfo } = require('./src/store');
+const {PORT, NODE_ENV} = require('./src/config');
 
 const app = express();
-app.use(
-  morgan(process.env.NODE_ENV === 'production' ? 'common' : 'dev', {
-    skip: (req, res) => process.env.NODE_ENV === 'test'
-  })
-);
+app.use(morgan((NODE_ENV === 'production') ? 'tiny' : 'common', {
+  skip: () => NODE_ENV === 'test',
+}));
+app.use(helmet());
 app.use(cors());
 
 // Catch-all 404
@@ -20,7 +20,7 @@ app.use(function (req, res, next) {
   next(err);
 });
 
-app.get('/api/cat', function (req, res, next) {
+app.get(`${PORT}/api/cat`, function (req, res, next) {
   res.json(catInfo[0])
     .catch(err => {
       next(err);
@@ -28,14 +28,14 @@ app.get('/api/cat', function (req, res, next) {
 
 });
 
-app.get('/api/dog', (req, res, next) => {
+app.get(`${PORT}/api/dog`, (req, res, next) => {
   res.json(dogInfo[0])
     .catch(err => {
       next(err);
     });
 });
 
-app.delete('/api/cat', (req, res, next) => {
+app.delete(`${PORT}/api/cat`, (req, res, next) => {
   Promise.all([
     catInfo.shift(),
     res.sendStatus(204)
@@ -45,7 +45,7 @@ app.delete('/api/cat', (req, res, next) => {
   ]);
 });
 
-app.delete('/api/dog', (req, res, next) => {
+app.delete(`${PORT}/api/dog`, (req, res, next) => {
   Promise.all([
     dogInfo.shift(),
     res.sendStatus(204)
