@@ -1,3 +1,4 @@
+'use strict';
 const express = require('express');
 const cors = require('cors');
 
@@ -9,6 +10,25 @@ app.use(function (req, res, next) {
   const err = new Error('Not Found');
   err.status = 404;
   next(err);
+});
+
+app.use('/api/cat', function (req, res, next) {
+  req.app.get()
+    .then(res => {
+      if (res.ok) {
+        return res.json({
+          imageURL:'https://assets3.thrillist.com/v1/image/2622128/size/tmg-slideshow_l.jpg', 
+          imageDescription: 'Orange bengal cat with black stripes lounging on concrete.',
+          name: 'Fluffy',
+          sex: 'Female',
+          age: 2,
+          breed: 'Bengal',
+          story: 'Thrown on the street'
+        });
+      }
+    })
+    .catch(next);
+
 });
 
 // Catch-all Error handler
