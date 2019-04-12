@@ -61,6 +61,24 @@ const catInfo = [
   }
 ];
 
+const userInfo = [
+  {
+    name: 'Tauhida'
+  },
+  {
+    name: 'Alex'
+  },
+  {
+    name: 'Wenceslao'
+  },
+  {
+    name: 'Daniel'
+  },
+  {
+    name: 'Ali'
+  }
+];
+
 class _Node {
   constructor(value) {
     this.value = value,
@@ -114,6 +132,12 @@ Cats.enqueue(catInfo[0]);
 Cats.enqueue(catInfo[1]);
 Cats.enqueue(catInfo[2]);
 
+const Users = new Queue();
+Users.enqueue(userInfo[0]);
+Users.enqueue(userInfo[1]);
+Users.enqueue(userInfo[2]);
+Users.enqueue(userInfo[3]);
+
 
 function catRefill() {
   Cats.enqueue(catInfo[1]);
@@ -131,5 +155,7 @@ module.exports = {
   dogInfo, 
   catInfo,
   catRefill, 
-  dogRefill
+  dogRefill,
+  Cats,
+  Dogs
 };
